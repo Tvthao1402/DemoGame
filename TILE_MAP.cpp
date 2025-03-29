@@ -68,7 +68,10 @@ void Map::renderMap(SDL_Renderer* renderer) {
                 if (obstacleType == 4) texture = obstacleTextures[2]; // Cây
 
                 if (texture) {
-                    SDL_RenderCopy(renderer, texture, NULL, &tile);
+                    //SDL_RenderCopy(renderer, texture, NULL, &tile);
+                    SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255); // Màu xám
+                    SDL_RenderFillRect(renderer, &tile); // Vẽ nền
+                    SDL_RenderCopy(renderer, texture, NULL, &tile); // Vẽ texture lên trê
                 } else {
                     SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255); // Màu xám cho tường
                     SDL_RenderFillRect(renderer, &tile);
