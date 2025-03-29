@@ -9,9 +9,8 @@ class Menu {
 public:
     Menu(SDL_Renderer* renderer);
     ~Menu();
-
-    void render(); // Vẽ menu
-    int handleEvent(SDL_Event& e); // Xử lý sự kiện chuột
+    void render();
+    int handleEvent(SDL_Event& e);
 
 private:
     SDL_Renderer* renderer;
@@ -19,7 +18,7 @@ private:
     SDL_Texture* playButton, *settingButton;
     SDL_Rect playRect, settingRect;
 
-    SDL_Texture* loadTexture(const char* path); // Hàm tải ảnh
+    SDL_Texture* loadTexture(const char* path);
 };
 
 #endif

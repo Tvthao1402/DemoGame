@@ -17,28 +17,25 @@ Bullet::Bullet(float x, float y, float dx, float dy) : x(x), y(y), dx(dx), dy(dy
 ,textureBulletUp(nullptr), textureBulletDown(nullptr),
       textureBulletLeft(nullptr), textureBulletRight(nullptr),
       currentBulletTexture(nullptr), currentDirectionBullet(BULLET_DOWN) {
-    // Xác định hướng dựa trên dx và dy
-    if (dx > 0 && dy == 0) { // Phải
+    if (dx > 0 && dy == 0) {
         currentDirectionBullet = BULLET_RIGHT;
         currentBulletTexture = textureBulletRight;
-    } else if (dx < 0 && dy == 0) { // Trái
+    } else if (dx < 0 && dy == 0) {
         currentDirectionBullet = BULLET_LEFT;
         currentBulletTexture = textureBulletLeft;
-    } else if (dy > 0 && dx == 0) { // Xuống
+    } else if (dy > 0 && dx == 0) {
         currentDirectionBullet = BULLET_DOWN;
         currentBulletTexture = textureBulletDown;
-    } else if (dy < 0 && dx == 0) { // Lên
+    } else if (dy < 0 && dx == 0) {
         currentDirectionBullet = BULLET_UP;
         currentBulletTexture = textureBulletUp;
     }
-    // Lưu ý: Texture sẽ được gán sau khi gọi loadBulletTextures
 }
 Bullet::~Bullet() {
     if (textureBulletUp) SDL_DestroyTexture(textureBulletUp);
     if (textureBulletDown) SDL_DestroyTexture(textureBulletDown);
     if (textureBulletLeft) SDL_DestroyTexture(textureBulletLeft);
     if (textureBulletRight) SDL_DestroyTexture(textureBulletRight);
-    // currentBulletTexture không cần giải phóng vì nó chỉ trỏ đến một trong các texture trên
 }
 Bullet::Bullet(Bullet&& other) noexcept
     : x(other.x), y(other.y), dx(other.dx), dy(other.dy),
@@ -58,13 +55,11 @@ Bullet::Bullet(Bullet&& other) noexcept
 
 Bullet& Bullet::operator=(Bullet&& other) noexcept {
     if (this != &other) {
-        // Giải phóng tài nguyên hiện có
         if (textureBulletUp) SDL_DestroyTexture(textureBulletUp);
         if (textureBulletDown) SDL_DestroyTexture(textureBulletDown);
         if (textureBulletLeft) SDL_DestroyTexture(textureBulletLeft);
         if (textureBulletRight) SDL_DestroyTexture(textureBulletRight);
 
-        // Di chuyển dữ liệu
         x = other.x;
         y = other.y;
         dx = other.dx;
@@ -77,7 +72,6 @@ Bullet& Bullet::operator=(Bullet&& other) noexcept {
         currentBulletTexture = other.currentBulletTexture;
         currentDirectionBullet = other.currentDirectionBullet;
 
-        // Vô hiệu hóa other
         other.textureBulletUp = nullptr;
         other.textureBulletDown = nullptr;
         other.textureBulletLeft = nullptr;
@@ -110,7 +104,6 @@ bool Bullet::loadBulletTextures(SDL_Renderer* renderer, const char* upPath, cons
     textureBulletRight = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
 
-    // Cập nhật texture dựa trên hướng hiện tại
     switch (currentDirectionBullet) {
         case BULLET_UP:
             currentBulletTexture = textureBulletUp;

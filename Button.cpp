@@ -1,14 +1,12 @@
-#include "Button.h"  // Đảm bảo include header chứa khai báo lớp
+#include "Button.h"
 #include <iostream>
 #include "Map.h"
 ButtonHandler::ButtonHandler(SDL_Renderer* renderer) {
-    // Khởi tạo texture
     restartTexture = nullptr;
     quitTexture = nullptr;
     continueTexture = nullptr;
     exitTexture = nullptr;
 
-    // Định kích thước và vị trí cho các nút
     const int restartWidth = 50;
     const int restartHeight = 50;
     const int quitWidth = 100;
@@ -17,9 +15,6 @@ ButtonHandler::ButtonHandler(SDL_Renderer* renderer) {
     const int continueHeight = 50;
     const int exitWidth = 100;
     const int exitHeight = 50;
-
-    // Căn giữa các nút theo màn hình
-    // Restart và Quit cho gameOver
     restartRect = {
         SCREEN_WIDTH / 2 - restartWidth / 2 - 70,
         SCREEN_HEIGHT / 2 - restartHeight / 2 - 70,
@@ -32,8 +27,6 @@ ButtonHandler::ButtonHandler(SDL_Renderer* renderer) {
         quitWidth,
         quitHeight
     };
-
-    // Continue và Exit cho pause
     continueRect = {
         SCREEN_WIDTH / 2 - continueWidth / 2 - 70,
         SCREEN_HEIGHT / 2 - continueHeight / 2 -100,
@@ -46,10 +39,8 @@ ButtonHandler::ButtonHandler(SDL_Renderer* renderer) {
         exitWidth,
         exitHeight
     };
-
-    // Load ảnh từ file
     SDL_Surface* restartSurface = IMG_Load("image/reset_game.png");
-    SDL_Surface* quitSurface = IMG_Load("image/exit.png"); // Đổi tên để phân biệt nếu cần
+    SDL_Surface* quitSurface = IMG_Load("image/exit.png");
     SDL_Surface* continueSurface = IMG_Load("image/continue.png");
     SDL_Surface* exitSurface = IMG_Load("image/exit1.png");
 
@@ -95,7 +86,6 @@ ButtonHandler::~ButtonHandler() {
 
 void ButtonHandler::render(SDL_Renderer* renderer, bool isPaused, bool isGameOver) {
     if (isPaused) {
-        // Chỉ vẽ Continue và Exit khi pause
         if (continueTexture) {
             SDL_RenderCopy(renderer, continueTexture, NULL, &continueRect);
         }
@@ -103,7 +93,6 @@ void ButtonHandler::render(SDL_Renderer* renderer, bool isPaused, bool isGameOve
             SDL_RenderCopy(renderer, exitTexture, NULL, &exitRect);
         }
     } else if (isGameOver) {
-        // Chỉ vẽ Restart và Quit khi gameOver
         if (restartTexture) {
             SDL_RenderCopy(renderer, restartTexture, NULL, &restartRect);
         }

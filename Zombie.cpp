@@ -7,14 +7,10 @@ Zombie::~Zombie() {
         SDL_DestroyTexture(texture);
     }
 }
-
-// Move constructor
 Zombie::Zombie(Zombie&& other) noexcept
     : x(other.x), y(other.y), alive(other.alive), texture(other.texture) {
-    other.texture = nullptr; // Tránh double free
+    other.texture = nullptr;
 }
-
-// Move assignment
 Zombie& Zombie::operator=(Zombie&& other) noexcept {
     if (this != &other) {
         if (texture) {
@@ -35,16 +31,16 @@ void Zombie::moveRandomly(const vector<Zombie> & zombies ) {
     float newX = x, newY = y;
 
     switch (direction) {
-        case 0: newY -= ZOMBIE_SPEED; break; // Lên
-        case 1: newY += ZOMBIE_SPEED; break; // Xuống
-        case 2: newX -= ZOMBIE_SPEED; break; // Trái
-        case 3: newX += ZOMBIE_SPEED; break; // Phải
+        case 0: newY -= ZOMBIE_SPEED; break;
+        case 1: newY += ZOMBIE_SPEED; break;
+        case 2: newX -= ZOMBIE_SPEED; break;
+        case 3: newX += ZOMBIE_SPEED; break;
     }
       if (newX < 0 || newX + ZOMBIE_SIZE > MAP_COLS * TILE_SIZE ||
         newY < 0 || newY + ZOMBIE_SIZE > MAP_ROWS * TILE_SIZE) {
-        return; // Không di chuyển nếu ra ngoài map
+        return;
     }
-    if (!gameMap.checkCollision(newX, newY, ZOMBIE_SIZE)) { // Kiểm tra va chạm với tường
+    if (!gameMap.checkCollision(newX, newY, ZOMBIE_SIZE)) {
         bool canMove = true;
         for(const auto & z : zombies){
            if (&z != this && abs(newX - z.x) < ZOMBIE_SIZE && abs(newY - z.y) < ZOMBIE_SIZE) {
@@ -79,7 +75,6 @@ bool Zombie::ZombieIsHit(float bulletX, float bulletY) {
 }
 
 void spawnZombies(vector<Zombie>& zombies , int numZombies, const Player& player1, const Player& player2 , SDL_Renderer* renderer) {
-    //srand(static_cast<unsigned int>(time(nullptr)));
     zombies.reserve(zombies.size() + numZombies);
     for (int i = 0; i < numZombies; i++) {
         int row, col;
@@ -91,9 +86,9 @@ void spawnZombies(vector<Zombie>& zombies , int numZombies, const Player& player
             col = rand() % (MAP_COLS - 2);
             newX = col * TILE_SIZE;
             newY = row * TILE_SIZE;
-            valid = (mapData[row][col] == 0) && // Không phải tường
-                    (abs(newX - player1.x) > 100 || abs(newY - player1.y) > 100) && // Cách xa player1
-                    (abs(newX - player2.x) > 100 || abs(newY - player2.y) > 100);   // Cách xa player2
+            valid = (mapData[row][col] == 0) &&
+                    (abs(newX - player1.x) > 100 || abs(newY - player1.y) > 100) &&
+                    (abs(newX - player2.x) > 100 || abs(newY - player2.y) > 100);
         for (const auto& z : zombies) {
                 if (abs(newX - z.x) < ZOMBIE_SIZE && abs(newY - z.y) < ZOMBIE_SIZE) {
                     valid = false;
@@ -103,9 +98,8 @@ void spawnZombies(vector<Zombie>& zombies , int numZombies, const Player& player
         } while (!valid);
         zombies.emplace_back(newX, newY);
         if (!zombies.back().loadZombieTexture(renderer, "image/zombie.png")) {
-            zombies.pop_back(); // Xóa nếu không load được texture
+            zombies.pop_back();
         }
-
     }
 }
 bool Zombie::checkZombieHitPlayer(const Zombie& zombie, Player& player) {

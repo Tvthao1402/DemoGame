@@ -40,11 +40,11 @@ Map::~Map() {
     cleanupTextures();
 }
 void Map::generateObstacles() {
-    srand(time(0)); // Khởi tạo random
+    srand(time(0));
     for (int row = 0; row < MAP_ROWS ; row++) {
         for (int col = 0; col < MAP_COLS ; col++) {
             if (mapData[row][col] == 1  && (row != 1 || col != 1 || row != MAP_COLS - 1 || col != MAP_ROWS - 1)) {
-                mapData[row][col] = rand() % OBSTACLE_COUNT + 2; // Random từ 2 đến 4
+                mapData[row][col] = rand() % OBSTACLE_COUNT + 2;
 
             }
         }
@@ -57,30 +57,29 @@ void Map::renderMap(SDL_Renderer* renderer) {
             SDL_Rect tile = { col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE };
 
             if (mapData[row][col] == 0) {
-                SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255); // Màu nền
+                SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
                 SDL_RenderFillRect(renderer, &tile);
             } else {
                 int obstacleType = mapData[row][col];
 
                 SDL_Texture* texture = nullptr;
-                if (obstacleType == 2) texture = obstacleTextures[0]; // Xe hỏng
-                if (obstacleType == 3) texture = obstacleTextures[1]; // Thùng gỗ
-                if (obstacleType == 4) texture = obstacleTextures[2]; // Cây
+                if (obstacleType == 2) texture = obstacleTextures[0];
+                if (obstacleType == 3) texture = obstacleTextures[1];
+                if (obstacleType == 4) texture = obstacleTextures[2];
 
                 if (texture) {
-                    //SDL_RenderCopy(renderer, texture, NULL, &tile);
-                    SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255); // Màu xám
-                    SDL_RenderFillRect(renderer, &tile); // Vẽ nền
-                    SDL_RenderCopy(renderer, texture, NULL, &tile); // Vẽ texture lên trê
+
+                    SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
+                    SDL_RenderFillRect(renderer, &tile);
+                    SDL_RenderCopy(renderer, texture, NULL, &tile);
                 } else {
-                    SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255); // Màu xám cho tường
+                    SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
                     SDL_RenderFillRect(renderer, &tile);
                 }
             }
         }
-}
-
-    SDL_SetRenderDrawColor(renderer, 139, 69, 19, 255); // Màu nâu
+    }
+    SDL_SetRenderDrawColor(renderer, 139, 69, 19, 255);
     for (int i = 0; i < MAP_COLS; i++) {
         SDL_Rect topBorder = { i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE };
         SDL_Rect bottomBorder = { i * TILE_SIZE, (MAP_ROWS - 1) * TILE_SIZE, TILE_SIZE, TILE_SIZE };
@@ -118,20 +117,20 @@ bool Map::checkCollision(float newX, float newY, int PLAYER_SIZE) {
     int top    = static_cast<int>(newY) / TILE_SIZE;
     int bottom = static_cast<int>(newY + PLAYER_SIZE - 1) / TILE_SIZE;
 
-    // Kiểm tra nếu vị trí nằm ngoài map
+
     if (left < 1 || right >= MAP_COLS - 1|| top < 1 || bottom >= MAP_ROWS -1) {
-        return true; // Va chạm với tường ngoài biên
+        return true;
     }
 
-    int obstacles[] = {1, 2, 3, 4}; // Các vật cản không thể đi qua
+    int obstacles[] = {1, 2, 3, 4};
     for (int i = 0; i < 4; i++) {
         if (mapData[top][left] == obstacles[i] || mapData[top][right] == obstacles[i] ||
             mapData[bottom][left] == obstacles[i] || mapData[bottom][right] == obstacles[i]) {
-            return true; // Va chạm với vật cản
+            return true;
         }
     }
 
-    return false; // Không có va chạm
+    return false;
 }
 bool Map::isBulletColliding(float x, float y) {
     int left   = (int)x / TILE_SIZE;
@@ -139,18 +138,15 @@ bool Map::isBulletColliding(float x, float y) {
     int top    = (int)y / TILE_SIZE;
     int bottom = (int)(y + BULLET_SIZE - 1) / TILE_SIZE;
 
-    // Kiểm tra nếu vị trí nằm ngoài bản đồ
     if (left < 1 || right >= MAP_COLS - 1|| top < 1 || bottom >= MAP_ROWS -1) {
-        return true; // Va chạm với biên ngoài
+        return true;
     }
-
-    // Kiểm tra nếu bất kỳ góc nào của viên đạn nằm trong tường
     if (mapData[top][left] != 0 || mapData[top][right] != 0 ||
         mapData[bottom][left] != 0 || mapData[bottom][right] != 0) {
-        return true; // Đạn đã chạm tường
+        return true;
     }
 
-    return false; // Không có va chạm
+    return false;
 }
 void Map::cleanupTextures() {
     for (int i = 0; i < OBSTACLE_COUNT; i++) {

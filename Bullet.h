@@ -15,16 +15,13 @@ public:
     SDL_Texture* textureBulletLeft;
     SDL_Texture* textureBulletRight;
     SDL_Texture* currentBulletTexture;
-    //int direction; // 0: up, 1: down, 2: left, 3: right
-    //double angle;  // Góc xoay
 
     BulletDirection currentDirectionBullet;
     Bullet(float x, float y, float dx, float dy);
     ~Bullet();
     Bullet(const Bullet&) = delete;
     Bullet& operator=(const Bullet&) = delete;
-
-    // Cho phép di chuyển
+s
     Bullet(Bullet&& other) noexcept;
     Bullet& operator=(Bullet&& other) noexcept;
 

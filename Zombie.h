@@ -21,8 +21,6 @@ public:
     ~Zombie();
     Zombie(const Zombie&) = delete;
     Zombie& operator=(const Zombie&) = delete;
-
-    // Cho phép di chuyển
     Zombie(Zombie&& other) noexcept;
     Zombie& operator=(Zombie&& other) noexcept;
 

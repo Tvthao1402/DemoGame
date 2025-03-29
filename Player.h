@@ -13,11 +13,10 @@ enum Direction { UP, DOWN, LEFT, RIGHT };
 class Player{
 public:
     float x , y;
-
     int score = 0;
     int live = 5;
-    float facingX, facingY; // Hướng cuối cùng nhân vật đối mặt
-    double angle;         // Góc xoay của texture (đơn vị: độ
+    float facingX, facingY;
+    double angle;
     Player();
     ~Player();
 
@@ -26,7 +25,7 @@ public:
 
     void renderCountdown(SDL_Renderer* renderer, TTF_Font* font, Uint32 gameStartTime, int gameDuration, int player1ScoreX, int player2ScoreX , int pauseTime);
 
-    SDL_Texture* heartTexture; // Ảnh trái tim
+    SDL_Texture* heartTexture;
     SDL_Texture* textureUp;
     SDL_Texture* textureDown;
     SDL_Texture* textureLeft;
