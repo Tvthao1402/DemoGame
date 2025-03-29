@@ -21,7 +21,6 @@ public:
     ~Bullet();
     Bullet(const Bullet&) = delete;
     Bullet& operator=(const Bullet&) = delete;
-s
     Bullet(Bullet&& other) noexcept;
     Bullet& operator=(Bullet&& other) noexcept;
 
