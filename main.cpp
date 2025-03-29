@@ -332,6 +332,7 @@ int main() {
                 if (player2.PlayerIsHit(bullet.x, bullet.y)) {
                     bullet.active = false;
                      player2.live--;
+                     player1.score += 3;
                      if(player2.live == 0) {
                         winMessage = "Player 1 Wins!";
                             running = false;
@@ -343,9 +344,9 @@ int main() {
             }
             for (auto& bullet : bullet2) {
               if (player1.PlayerIsHit(bullet.x, bullet.y)) {
-
                   bullet.active = false;
                   player1.live--;
+                  player2.score += 3;
                   if(player1.live == 0) {
                        winMessage = "Player 2 Wins!";
                             running = false;
@@ -385,7 +386,6 @@ int main() {
                  spawnZombies(zombies, 1, player1, player2 , renderer); //
                  lastSpawnTime = currentTime;
              }
-
 
            int player1ScoreX = 380;
            int player2ScoreX = 200;
