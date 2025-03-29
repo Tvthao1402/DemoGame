@@ -80,7 +80,7 @@ int main() {
                 }
 
                 int action = menu.handleEvent(event);
-                if (action == 1) { // Nếu chọn "Play", thoát vòng lặp menu
+                if (action == 1) { //
                     menuRunning = false;
                 }
                 if (action == 2) {
@@ -100,13 +100,13 @@ int main() {
             return -1;
         }
 
-        Uint32 lastSpawnTime = SDL_GetTicks(); // Thời gian spawn zombie cuối cùng
-         const int spawnInterval = 20000; // 2 giây (2000 ms)
-         int maxZombies = 5; // Số lượng zom
+        Uint32 lastSpawnTime = SDL_GetTicks();
+         const int spawnInterval = 20000;
+         int maxZombies = 5; //
 
-         const int GAME_DURATION = 150000; // 120000 ms = 2 phút
+         const int GAME_DURATION = 300000;
          Uint32 gameStartTime = SDL_GetTicks();
-         Uint32 pauseStartTime = 0;// Thời gian khi game bị Pause
+         Uint32 pauseStartTime = 0;//
          Uint32 pausedTime = 0;
 
         bool running = true;
@@ -129,8 +129,8 @@ int main() {
 
         TTF_Font * font_screen = TTF_OpenFont("Roboto-Black.ttf", 50);
 
-        Uint32 lastShotTime1 = 0; // Thời gian bắn cuối cùng của player1
-        Uint32 lastShotTime2 = 0; // Thời gian bắn cuối cùng của player2
+        Uint32 lastShotTime1 = 0;
+        Uint32 lastShotTime2 = 0;
         const int SHOOT_DELAY = 500;
         string winMessage = "";
 
@@ -155,14 +155,14 @@ int main() {
                             Mix_PauseMusic();
                          } else {
                              pausedTime += SDL_GetTicks() - pauseStartTime;
-                             Mix_ResumeMusic(); // Cộng dồn thời gian đã pause
+                             Mix_ResumeMusic();
                          }
                     }
 
                 if(!isPaused){
                 if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
                     Uint32 currentTime = SDL_GetTicks();
-                    if (currentTime - lastShotTime1 >= SHOOT_DELAY) { // Kiểm tra thời gian giữa các lần bắn
+                    if (currentTime - lastShotTime1 >= SHOOT_DELAY) {
                         float centerX = player1.x + PLAYER_SIZE / 2;
                         float centerY = player1.y + PLAYER_SIZE / 2;
                         Bullet newBullet(centerX, centerY, player1.facingX, player1.facingY);
@@ -181,7 +181,7 @@ int main() {
                 }
                 if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
                         Uint32 currentTime = SDL_GetTicks();
-                    if (currentTime - lastShotTime2 >= SHOOT_DELAY) { // Kiểm tra thời gian giữa các lần bắn
+                    if (currentTime - lastShotTime2 >= SHOOT_DELAY) {
                         float centerX = player2.x + PLAYER_SIZE / 2;
                         float centerY = player2.y + PLAYER_SIZE / 2;
                         Bullet newBullet(centerX, centerY, player2.facingX, player2.facingY);
@@ -200,9 +200,9 @@ int main() {
                 if (event.type == SDL_MOUSEBUTTONDOWN) {
                     int mouseX, mouseY;
                     SDL_GetMouseState(&mouseX, &mouseY);
-                    if (buttonHandler.checkRestartClick(mouseX, mouseY)) { // Tái sử dụng "Restart" làm "Resume"
+                    if (buttonHandler.checkRestartClick(mouseX, mouseY)) {
                         isPaused = false;
-                        pausedTime += SDL_GetTicks() - pauseStartTime; // Cộng dồn thời gian pause
+                        pausedTime += SDL_GetTicks() - pauseStartTime;
                         Mix_ResumeMusic();
                     }
                     if (buttonHandler.checkQuitClick(mouseX, mouseY)) {
@@ -233,7 +233,7 @@ int main() {
             const Uint8* keys = SDL_GetKeyboardState(NULL);
 
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-            SDL_RenderClear(renderer); // xóa màn hình trc khi vẽ frame mới
+            SDL_RenderClear(renderer);
             gameMap.renderMap(renderer);
 
 
@@ -284,7 +284,7 @@ int main() {
                running = false;
             }
             player1.render(renderer);
-            player2.render(renderer);// vẽ nhân vật
+            player2.render(renderer);
             for (auto& zombie : zombies) {
                 zombie.moveRandomly(zombies);
                 zombie.render(renderer);
@@ -298,21 +298,21 @@ int main() {
               bullet.render(renderer);
 
             }
-    // Kiểm tra va chạm đạn - zombie
+
            for (auto& bullet : bullet1) {
               for (auto& zombie : zombies) {
                   if (zombie.ZombieIsHit(bullet.x, bullet.y)) {
 
                        bullet.active = false;
                       zombie.alive = false;
-                       player1.score++; // Player 1 bắn trúng zombie
+                       player1.score++;
                  }
               }
            }
            zombies.erase( remove_if(zombies.begin(), zombies.end(), [](const Zombie &b) { return !b.alive; }),zombies.end());
            for (auto it = zombies.begin(); it != zombies.end();) {
-               if (!it->alive) { // Dùng `it->alive` thay vì `(*it)->alive`
-                  it = zombies.erase(it); // Không cần delete vì Zombie không phải con trỏ
+               if (!it->alive) {
+                  it = zombies.erase(it);
                     } else {
                          ++it;
                }
@@ -323,15 +323,15 @@ int main() {
 
                       bullet.active = false;
                       zombie.alive = false;
-                      player2.score++; // Player 2 bắn trúng zombie
+                      player2.score++;
                }
              }
            }
-    // Kiểm tra va chạm đạn - người chơi
+
             for (auto& bullet : bullet1) {
                 if (player2.PlayerIsHit(bullet.x, bullet.y)) {
                     bullet.active = false;
-                     player2.live--; // Player 2 mất 1 mạng
+                     player2.live--;
                      if(player2.live == 0) {
                         winMessage = "Player 1 Wins!";
                             running = false;
@@ -345,7 +345,7 @@ int main() {
               if (player1.PlayerIsHit(bullet.x, bullet.y)) {
 
                   bullet.active = false;
-                  player1.live--; // Player 1 mất 1 mạng
+                  player1.live--;
                   if(player1.live == 0) {
                        winMessage = "Player 2 Wins!";
                             running = false;
@@ -382,13 +382,13 @@ int main() {
 
              Uint32 currentTime = SDL_GetTicks();
              if (currentTime - lastSpawnTime >= spawnInterval) {
-                 spawnZombies(zombies, 1, player1, player2 , renderer); // Spawn thêm 1 zombie mỗi 2 giây
-                 lastSpawnTime = currentTime; // Cập nhật lại thời gian spawn
+                 spawnZombies(zombies, 1, player1, player2 , renderer); //
+                 lastSpawnTime = currentTime;
              }
 
 
-           int player1ScoreX = 380; // Tọa độ x của "Score1"
-           int player2ScoreX = 200; // Tọa độ x của "Score2"
+           int player1ScoreX = 380;
+           int player2ScoreX = 200;
 
             player1.renderHearts(renderer, 1 , font_score , player1.score);// ve trai tim
             player2.renderHearts(renderer, 2 , font_score , player2.score);
@@ -404,10 +404,9 @@ int main() {
          }
 
 
-             if (gameOver) { // Màn hình chiến thắng
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Nền đen
+             if (gameOver) {
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                 SDL_RenderClear(renderer);
-                // Vẽ thông báo chiến thắng
                 player1.renderText(renderer, font_screen, winMessage, SCREEN_WIDTH / 2 - 140, SCREEN_HEIGHT / 2 - 200);
                 buttonHandler.render(renderer,false , true);
                 SDL_RenderPresent(renderer);
