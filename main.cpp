@@ -65,9 +65,12 @@ int main() {
 
         Menu menu(renderer);
         bool menuRunning = true;
+        bool showHowToPlay = false;
         SDL_Event event;
 
          Mix_PlayMusic(backgroundMusic, -1);
+         ButtonHandler buttonHandler(renderer);
+         Map gameMap;
 
         while (menuRunning) {
             while (SDL_PollEvent(&event)) {
@@ -84,11 +87,72 @@ int main() {
                     menuRunning = false;
                 }
                 if (action == 2) {
-                    cout << "Open setting" << endl;
+                    showHowToPlay = true;
                 }
+                if (showHowToPlay && event.type == SDL_MOUSEBUTTONDOWN) {
+                      int mouseX, mouseY;
+                      SDL_GetMouseState(&mouseX, &mouseY);
+                      if (buttonHandler.checkBackClick(mouseX, mouseY)) {
+                          showHowToPlay = false;
+                      }
+                 }
               }
-                 menu.render();
+            if (showHowToPlay) {
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                SDL_RenderClear(renderer);
+                TTF_Font* titleFont = TTF_OpenFont("Roboto-Black.ttf", 50);
+
+                TTF_Font* instructionFont = TTF_OpenFont("Roboto-Black.ttf", 20);
+
+                if (!titleFont || !instructionFont) {
+                  printf("Không thể load font: %s\n", TTF_GetError());
+                } else {
+                   SDL_Color textColor = {255, 255, 255, 255};
+                   SDL_Surface* titleSurface = TTF_RenderText_Solid(titleFont, "How to Play", textColor);
+                   SDL_Texture* titleTexture = SDL_CreateTextureFromSurface(renderer, titleSurface);
+                   int titleWidth, titleHeight;
+                   TTF_SizeText(titleFont, "How to Play", &titleWidth, &titleHeight);
+                   SDL_Rect titleRect = {SCREEN_WIDTH / 2 - titleWidth / 2, 50, titleWidth, titleHeight};
+                   SDL_RenderCopy(renderer, titleTexture, NULL, &titleRect);
+
+        const char* instructions[] = {
+            "-2 player game each person has 5 lives",
+            "-Player 1: move with {A,D,S,W}, shoot by = SPACE",
+            "-Player 2: move with {L,R,U,D}, shoot by = ENTER",
+            "-Kill zombies and avoid enemy bullets to survive",
+            "-Hitting a zombie adds 1 point, hitting a person",
+            " adds 3 points",
+            "-How to Determine the Winner: After 5 minutes",
+            "-The person with more points wins.",
+            "-If the points are equal, consider the remaining",
+            " lives. Whoever has more lives wins.",
+            "-If both the points and the lives are equal,",
+            " the match ends in a draw",
+        };
+
+            for (int i = 0; i < 12; i++) {
+               SDL_Surface* textSurface = TTF_RenderText_Solid(instructionFont, instructions[i], textColor);
+               SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+               int textWidth, textHeight;
+               TTF_SizeText(instructionFont, instructions[i], &textWidth, &textHeight);
+               SDL_Rect textRect = {SCREEN_WIDTH / 2 - textWidth / 2, 150 + i * 30, textWidth, textHeight};
+               SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
+               SDL_FreeSurface(textSurface);
+               SDL_DestroyTexture(textTexture);
+           }
+
+           SDL_FreeSurface(titleSurface);
+           SDL_DestroyTexture(titleTexture);
+           TTF_CloseFont(titleFont);
+           TTF_CloseFont(instructionFont);
         }
+            buttonHandler.render(renderer, false, false, true);
+          } else {
+                  menu.render();
+            }
+            SDL_RenderPresent(renderer);
+        }
+
 
         Player player1 , player2;
 
@@ -134,7 +198,7 @@ int main() {
         const int SHOOT_DELAY = 500;
         string winMessage = "";
 
-        ButtonHandler buttonHandler(renderer);
+
          bool restartGame = false;
          bool isPaused = false;
          const int FRAME_DELAY = 1000 / 60;
@@ -204,6 +268,23 @@ int main() {
                         isPaused = false;
                         pausedTime += SDL_GetTicks() - pauseStartTime;
                         Mix_ResumeMusic();
+                    }
+                    if (buttonHandler.checkNewGameClick(mouseX, mouseY)) {
+                            player1.randomizePlayerPosition(player2);
+                            player2.randomizePlayerPosition(player1);
+                            bullet1.clear();
+                            bullet2.clear();
+                            zombies.clear();
+                            spawnZombies(zombies, maxZombies, player1, player2, renderer);
+                            gameStartTime = SDL_GetTicks();
+                            lastSpawnTime = SDL_GetTicks();
+                            pausedTime = 0;
+                            player1.score = 0;
+                            player2.score = 0;
+                            player1.live = 5;
+                            player2.live = 5;
+                            isPaused = false;
+                            Mix_ResumeMusic();
                     }
                     if (buttonHandler.checkQuitClick(mouseX, mouseY)) {
                         running = false;
@@ -399,7 +480,7 @@ int main() {
             } else {
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                 SDL_RenderClear(renderer);
-                buttonHandler.render(renderer, true, false);
+                buttonHandler.render(renderer, true, false, false);
             }
          }
 
@@ -408,7 +489,7 @@ int main() {
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                 SDL_RenderClear(renderer);
                 player1.renderText(renderer, font_screen, winMessage, SCREEN_WIDTH / 2 - 140, SCREEN_HEIGHT / 2 - 200);
-                buttonHandler.render(renderer,false , true);
+                buttonHandler.render(renderer,false , true, false);
                 SDL_RenderPresent(renderer);
             }
             if (restartGame) {
@@ -435,7 +516,8 @@ int main() {
             if (frameTime < FRAME_DELAY) {
             SDL_Delay(FRAME_DELAY - frameTime);
             }
-        }
+    }
+
         Mix_FreeChunk(shootSound);
         Mix_FreeMusic(backgroundMusic);
         Mix_CloseAudio();
