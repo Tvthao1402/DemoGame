@@ -19,7 +19,7 @@ public:
     BulletDirection currentDirectionBullet;
     Bullet(float x, float y, float dx, float dy);
     ~Bullet();
-    Bullet(const Bullet&) = delete;
+    Bullet(const Bullet&) = delete;// vô hiệu hóa copy constructor  tránh lãng phí tài nguyên bộ nhờ
     Bullet& operator=(const Bullet&) = delete;
     Bullet(Bullet&& other) noexcept;
     Bullet& operator=(Bullet&& other) noexcept;

@@ -7,10 +7,12 @@ Zombie::~Zombie() {
         SDL_DestroyTexture(texture);
     }
 }
+//sao chép dữ liệu từ other rồi để other là null , đỡ tốn bộ nhờ
 Zombie::Zombie(Zombie&& other) noexcept
     : x(other.x), y(other.y), alive(other.alive), texture(other.texture) {
     other.texture = nullptr;
 }
+// tránh  rò rỉ bộ nhớ
 Zombie& Zombie::operator=(Zombie&& other) noexcept {
     if (this != &other) {
         if (texture) {
@@ -20,14 +22,14 @@ Zombie& Zombie::operator=(Zombie&& other) noexcept {
         y = other.y;
         alive = other.alive;
         texture = other.texture;
-        other.texture = nullptr;
+        other.texture = nullptr;// giải phóng texture cũ
     }
     return *this;
 }
-
+// hàm di chuyển zombie ngẫu nhiên
 void Zombie::moveRandomly(const vector<Zombie> & zombies ) {
     if (!alive) return;
-    int direction = rand() % 4;
+    int direction = rand() % 4;// random 4 hướng
     float newX = x, newY = y;
 
     switch (direction) {
@@ -36,10 +38,12 @@ void Zombie::moveRandomly(const vector<Zombie> & zombies ) {
         case 2: newX -= ZOMBIE_SPEED; break;
         case 3: newX += ZOMBIE_SPEED; break;
     }
+    // ktra vị trí zombie hợp lệ trong map
       if (newX < 0 || newX + ZOMBIE_SIZE > MAP_COLS * TILE_SIZE ||
         newY < 0 || newY + ZOMBIE_SIZE > MAP_ROWS * TILE_SIZE) {
         return;
     }
+    // kiểm tra va chạm tường
     if (!gameMap.checkCollision(newX, newY, ZOMBIE_SIZE)) {
         bool canMove = true;
         for(const auto & z : zombies){
@@ -54,6 +58,7 @@ void Zombie::moveRandomly(const vector<Zombie> & zombies ) {
     }
 }
 }
+// load ảnh zombie
 bool Zombie::loadZombieTexture(SDL_Renderer * renderer , const char * filePath){
     SDL_Surface* surface = IMG_Load(filePath);
     if(!surface){
@@ -64,16 +69,17 @@ bool Zombie::loadZombieTexture(SDL_Renderer * renderer , const char * filePath){
     SDL_FreeSurface(surface);
     return texture != nullptr;
 }
+// vẽ zombie
 void Zombie::render(SDL_Renderer* renderer) {
     if (!alive || !texture) return;
     SDL_Rect zombieRect = {static_cast<int>(x), static_cast<int>(y), ZOMBIE_SIZE, ZOMBIE_SIZE};
     SDL_RenderCopy(renderer ,texture , NULL , &zombieRect);
 }
-
+// ktra zombie có trúng đạn ko
 bool Zombie::ZombieIsHit(float bulletX, float bulletY) {
     return alive && (bulletX >= x && bulletX <= x + ZOMBIE_SIZE && bulletY >= y && bulletY <= y + ZOMBIE_SIZE);
 }
-
+// sinh zombie ngẫu nhiên
 void spawnZombies(vector<Zombie>& zombies , int numZombies, const Player& player1, const Player& player2 , SDL_Renderer* renderer) {
     zombies.reserve(zombies.size() + numZombies);
     for (int i = 0; i < numZombies; i++) {
@@ -96,12 +102,13 @@ void spawnZombies(vector<Zombie>& zombies , int numZombies, const Player& player
                 }
             }
         } while (!valid);
-        zombies.emplace_back(newX, newY);
+        zombies.emplace_back(newX, newY);//tránh việc tạo đối tượng tạm thời và sao chép/di chuyển.
         if (!zombies.back().loadZombieTexture(renderer, "image/zombie.png")) {
             zombies.pop_back();
         }
     }
 }
+// ktra va chạm vơi người chơi
 bool Zombie::checkZombieHitPlayer(const Zombie& zombie, Player& player) {
     return (player.x < zombie.x + ZOMBIE_SIZE && player.x + PLAYER_SIZE > zombie.x &&
             player.y < zombie.y + ZOMBIE_SIZE && player.y + PLAYER_SIZE > zombie.y);

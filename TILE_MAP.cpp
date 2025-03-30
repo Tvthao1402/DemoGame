@@ -39,6 +39,7 @@ int mapData[MAP_ROWS][MAP_COLS] = {
 Map::~Map() {
     cleanupTextures();
 }
+// hàm sinh ngẫu nhiên các vị trí 1 thành 2, 3 , 4 để vẽ các chướng ngại vật
 void Map::generateObstacles() {
     srand(time(0));
     for (int row = 0; row < MAP_ROWS ; row++) {
@@ -51,29 +52,30 @@ void Map::generateObstacles() {
     }
 }
 SDL_Texture* obstacleTextures[OBSTACLE_COUNT] = { nullptr, nullptr, nullptr };
+// hàm vẽ các chướng nhân vật
 void Map::renderMap(SDL_Renderer* renderer) {
     for (int row = 0; row < MAP_ROWS; row++) {
         for (int col = 0; col < MAP_COLS; col++) {
             SDL_Rect tile = { col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE };
 
             if (mapData[row][col] == 0) {
-                SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
+                SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);// màu xám
                 SDL_RenderFillRect(renderer, &tile);
             } else {
                 int obstacleType = mapData[row][col];
 
                 SDL_Texture* texture = nullptr;
-                if (obstacleType == 2) texture = obstacleTextures[0];
-                if (obstacleType == 3) texture = obstacleTextures[1];
-                if (obstacleType == 4) texture = obstacleTextures[2];
+                if (obstacleType == 2) texture = obstacleTextures[0];// vẽ côt chỉ đường
+                if (obstacleType == 3) texture = obstacleTextures[1];// vẽ thùng độc
+                if (obstacleType == 4) texture = obstacleTextures[2];// vẽ mộ
 
                 if (texture) {
 
-                    SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
+                    SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);// màu xám
                     SDL_RenderFillRect(renderer, &tile);
                     SDL_RenderCopy(renderer, texture, NULL, &tile);
                 } else {
-                    SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
+                    SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);// màu nâu viền
                     SDL_RenderFillRect(renderer, &tile);
                 }
             }
@@ -93,7 +95,7 @@ void Map::renderMap(SDL_Renderer* renderer) {
         SDL_RenderFillRect(renderer, &rightBorder);
     }
 }
-
+// load ảnh chướng ngại vật
 bool Map::loadTextures(SDL_Renderer* renderer) {
     cleanupTextures();
     const char* textureFiles[3] = {"image/col.png", "image/box1.png", "image/tomb.png" };
@@ -105,12 +107,13 @@ bool Map::loadTextures(SDL_Renderer* renderer) {
             cleanupTextures();
             return false;
         }
-        obstacleTextures[i] = SDL_CreateTextureFromSurface(renderer, tempSurface);
+        obstacleTextures[i] = SDL_CreateTextureFromSurface(renderer, tempSurface); // chuyển surface sang texture
 
-        SDL_FreeSurface(tempSurface);
+        SDL_FreeSurface(tempSurface);// giải phóng tempSurface
     }
     return true;
 }
+// hàm kiểm tra va chạm
 bool Map::checkCollision(float newX, float newY, int PLAYER_SIZE) {
     int left   = static_cast<int>(newX) / TILE_SIZE;
     int right  = static_cast<int>(newX + PLAYER_SIZE - 1) / TILE_SIZE;
@@ -132,6 +135,7 @@ bool Map::checkCollision(float newX, float newY, int PLAYER_SIZE) {
 
     return false;
 }
+// kiêm tra va chạm với đạn
 bool Map::isBulletColliding(float x, float y) {
     int left   = (int)x / TILE_SIZE;
     int right  = (int)(x + BULLET_SIZE - 1) / TILE_SIZE;
@@ -148,6 +152,7 @@ bool Map::isBulletColliding(float x, float y) {
 
     return false;
 }
+// xóa các texture ko dùng
 void Map::cleanupTextures() {
     for (int i = 0; i < OBSTACLE_COUNT; i++) {
         if (obstacleTextures[i]) {

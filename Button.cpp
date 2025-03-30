@@ -1,6 +1,7 @@
 #include "Button.h"
 #include <iostream>
 #include "Map.h"
+// các nút thao tác khi pause và game over
 ButtonHandler::ButtonHandler(SDL_Renderer* renderer) {
     restartTexture = nullptr;
     quitTexture = nullptr;
@@ -26,27 +27,27 @@ ButtonHandler::ButtonHandler(SDL_Renderer* renderer) {
         SCREEN_HEIGHT / 2 - restartHeight / 2 - 70,
         restartWidth,
         restartHeight
-    };
+    }; // kích thươc restart
     quitRect = {
         SCREEN_WIDTH / 2 - quitWidth / 2 - 50,
         restartRect.y + restartHeight + 70,
         quitWidth,
         quitHeight
-    };
+    };// kích thước nút quit
     continueRect = {
         SCREEN_WIDTH / 2 - continueWidth / 2 - 70,
         SCREEN_HEIGHT / 2 - continueHeight / 2 -100,
         continueWidth,
         continueHeight
-    };
+    };// kích thước nút continue
     exitRect = {
         SCREEN_WIDTH / 2 - exitWidth / 2 - 50,
         continueRect.y + continueHeight + 100,
         exitWidth,
         exitHeight
-    };
-    backRect = {10 ,  10,  backWidth, backHeight};
-    newGameRect = {SCREEN_WIDTH / 2 - newGameWidth / 2 - 50, continueRect.y - newGameHeight - 100, newGameWidth, newGameHeight};
+    };// kích thước exit
+    backRect = {10 ,  10,  backWidth, backHeight}; // kích thước nút back
+    newGameRect = {SCREEN_WIDTH / 2 - newGameWidth / 2 - 50, continueRect.y - newGameHeight - 100, newGameWidth, newGameHeight};// kích thước nút new game
     SDL_Surface* restartSurface = IMG_Load("image/reset_game.png");
     SDL_Surface* quitSurface = IMG_Load("image/exit.png");
     SDL_Surface* continueSurface = IMG_Load("image/continue.png");
@@ -100,7 +101,7 @@ ButtonHandler::ButtonHandler(SDL_Renderer* renderer) {
         SDL_QueryTexture(newGameTexture, NULL, NULL, &newGameRect.w, &newGameRect.h);
     }
 }
-
+// hàm hủy
 ButtonHandler::~ButtonHandler() {
     SDL_DestroyTexture(restartTexture);
     SDL_DestroyTexture(quitTexture);
@@ -109,9 +110,9 @@ ButtonHandler::~ButtonHandler() {
     SDL_DestroyTexture(backTexture);
     SDL_DestroyTexture(newGameTexture);
 }
-
+// hàm vẽ
 void ButtonHandler::render(SDL_Renderer* renderer, bool isPaused, bool isGameOver, bool isHowToPlay) {
-    if (isPaused) {
+    if (isPaused) { // nếu pause game
         if (newGameTexture) {
             SDL_RenderCopy(renderer, newGameTexture, NULL, &newGameRect);
         }
@@ -121,20 +122,20 @@ void ButtonHandler::render(SDL_Renderer* renderer, bool isPaused, bool isGameOve
         if (exitTexture) {
             SDL_RenderCopy(renderer, exitTexture, NULL, &exitRect);
         }
-    } else if (isGameOver) {
+    } else if (isGameOver) {// nếu game over
         if (restartTexture) {
             SDL_RenderCopy(renderer, restartTexture, NULL, &restartRect);
         }
         if (quitTexture) {
             SDL_RenderCopy(renderer, quitTexture, NULL, &quitRect);
         }
-    } else if (isHowToPlay) {
+    } else if (isHowToPlay) {// nếu chọn options
         if (backTexture) {
             SDL_RenderCopy(renderer, backTexture, NULL, &backRect);
         }
     }
 }
-
+// check click thành công
 bool ButtonHandler::checkRestartClick(int mouseX, int mouseY) {
     return (mouseX >= restartRect.x && mouseX <= restartRect.x + restartRect.w &&
             mouseY >= restartRect.y && mouseY <= restartRect.y + restartRect.h);

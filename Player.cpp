@@ -1,18 +1,20 @@
-    #include"Player.h"
-    #include "Map.h"
-    #include<ctime>
-    #include<cstdlib>
-    #include<cstdio>
-    #include<iostream>
-    #include"Bullet.h"
-    #include<cmath>
-    #include<sstream>
-    using namespace std;
-    Player::Player()
+#include"Player.h"
+#include "Map.h"
+#include<ctime>
+#include<cstdlib>
+#include<cstdio>
+#include<iostream>
+#include"Bullet.h"
+#include<cmath>
+#include<sstream>
+using namespace std;
+// hàm khởi tạo
+Player::Player()
     : x(0), y(0), facingX(0), facingY(1), angle(0),live(5),  score(0),
       textureUp(nullptr), textureDown(nullptr), textureLeft(nullptr), textureRight(nullptr),
       currentTexture(nullptr), heartTexture(nullptr), currentDirection(DOWN) {
 }
+// hàm hủy
 Player::~Player() {
     if (textureUp) SDL_DestroyTexture(textureUp);
     if (textureDown) SDL_DestroyTexture(textureDown);
@@ -20,28 +22,32 @@ Player::~Player() {
     if (textureRight) SDL_DestroyTexture(textureRight);
     if (heartTexture) SDL_DestroyTexture(heartTexture);
 }
-    void Player::movePlayer( const Uint8* keys, Player& player1, Player& player2) {
-
+// hàm di chuyển nhân vật
+void Player::movePlayer( const Uint8* keys, Player& player1, Player& player2) {
         float dx = 0 , dy = 0;
       if(this == &player1){
+            // di chuyển lên
             if (keys[SDL_SCANCODE_W] && !gameMap.checkCollision(player1.x, player1.y - PLAYER_SPEED , PLAYER_SIZE)) {
                 player1.y -= PLAYER_SPEED;
                 player1.facingX = 0; player1.facingY = -1;
                 currentDirection = UP;
             currentTexture = textureUp;
             }
+      // di chuyển xuống
             if (keys[SDL_SCANCODE_S] && !gameMap.checkCollision(player1.x, player1.y + PLAYER_SPEED, PLAYER_SIZE)) {
                 player1.y += PLAYER_SPEED;
                 player1.facingX = 0; player1.facingY = 1;
                 currentDirection = DOWN;
             currentTexture = textureDown;
             }
+            // di chuyển sang trái
             if (keys[SDL_SCANCODE_A] && !gameMap.checkCollision(player1.x - PLAYER_SPEED, player1.y,PLAYER_SIZE)) {
                 player1.x -= PLAYER_SPEED;
                 player1.facingX = -1; player1.facingY = 0;
                 currentDirection = LEFT;
             currentTexture = textureLeft;
             }
+            //di chuyển sang phải
             if (keys[SDL_SCANCODE_D] && !gameMap.checkCollision(player1.x + PLAYER_SPEED, player1.y,PLAYER_SIZE)) {
                 player1.x += PLAYER_SPEED;
                 player1.facingX = 1; player1.facingY = 0;
@@ -50,24 +56,28 @@ Player::~Player() {
             }
       }
         if(this == &player2){
+                // di chuyển lên
             if (keys[SDL_SCANCODE_UP] && !gameMap.checkCollision(player2.x, player2.y - PLAYER_SPEED,PLAYER_SIZE)) {
                 player2.y -= PLAYER_SPEED;
                 player2.facingX = 0; player2.facingY = -1;
                 currentDirection = UP;
             currentTexture = textureUp;
             }
+        // di chuyển xuống
             if (keys[SDL_SCANCODE_DOWN] && !gameMap.checkCollision(player2.x, player2.y + PLAYER_SPEED,PLAYER_SIZE)) {
                 player2.y += PLAYER_SPEED;
                 player2.facingX = 0; player2.facingY = 1;
            currentDirection = DOWN;
             currentTexture = textureDown;
             }
+            // di chuyển sang trái
             if (keys[SDL_SCANCODE_LEFT] && !gameMap.checkCollision(player2.x - PLAYER_SPEED, player2.y,PLAYER_SIZE)) {
                 player2.x -= PLAYER_SPEED;
                 player2.facingX = -1; player2.facingY = 0;
                 currentDirection = LEFT;
             currentTexture = textureLeft;
             }
+            // di chuyển sang phải
             if (keys[SDL_SCANCODE_RIGHT] && !gameMap.checkCollision(player2.x + PLAYER_SPEED, player2.y,PLAYER_SIZE)) {
                 player2.x += PLAYER_SPEED;
                 player2.facingX = 1; player2.facingY = 0;
@@ -75,13 +85,14 @@ Player::~Player() {
             currentTexture = textureRight;
             }
         }
+        // tính góc xoay nhân vật
          if (facingX != 0 || facingY != 0) {
             dx = facingX;
             dy = facingY ;
             angle = atan2(dx, dy) * 180 / M_PI + 90;
         }
 
-
+        // ktra va chạm ngoài map
         if (player1.x < 0) player1.x = 0;
         if (player1.x > SCREEN_WIDTH - PLAYER_SIZE ) player1.x = SCREEN_WIDTH - PLAYER_SIZE;
         if (player1.y < 0) player1.y = 0;
@@ -91,8 +102,9 @@ Player::~Player() {
         if (player2.x > SCREEN_WIDTH - PLAYER_SIZE ) player2.x = SCREEN_WIDTH - PLAYER_SIZE;
         if (player2.y < 0) player2.y = 0;
         if (player2.y > SCREEN_HEIGHT - PLAYER_SIZE ) player2.y = SCREEN_HEIGHT - PLAYER_SIZE ;
-    }
-    void Player::loadPlayerTextures(SDL_Renderer* renderer, const char* upPath, const char* downPath, const char* leftPath, const char* rightPath) {
+}
+// hàm load ảnh người chơi
+void Player::loadPlayerTextures(SDL_Renderer* renderer, const char* upPath, const char* downPath, const char* leftPath, const char* rightPath) {
     SDL_Surface* surface;
     surface = IMG_Load(upPath);
     if (!surface) {
@@ -126,22 +138,22 @@ Player::~Player() {
     currentTexture = textureDown;
     currentDirection = DOWN;
 }
-
-    void Player::render(SDL_Renderer* renderer) {
+// hàm vẽ người chơi
+void Player::render(SDL_Renderer* renderer) {
         SDL_Rect playerRect = {static_cast<int> (x) , static_cast<int> (y), PLAYER_SIZE , PLAYER_SIZE};
         SDL_RenderCopy(renderer, currentTexture, nullptr, &playerRect);
-    }
-
-
-    bool Player::loadHeartTexture(SDL_Renderer* renderer) {
+}
+// hàm kiểm tra load ảnh trái tim ( mạng sống )
+bool Player::loadHeartTexture(SDL_Renderer* renderer) {
         heartTexture = IMG_LoadTexture(renderer, "image/heart.png");
         if (!heartTexture) {
             cout << "Failed to load heart image! SDL_Error: " << SDL_GetError() << endl;
             return false;
         }
         return true;
-    }
-    void Player::renderScore(SDL_Renderer* renderer, TTF_Font* font, int x, int y , int score , string ID) {
+}
+// hàm vẽ điểm người chơi
+void Player::renderScore(SDL_Renderer* renderer, TTF_Font* font, int x, int y , int score , string ID) {
         if (!font) return;
 
         SDL_Color white = {255, 255, 255}; // Màu trắng
@@ -157,11 +169,12 @@ Player::~Player() {
 
         SDL_FreeSurface(textSurface);
         SDL_DestroyTexture(textTexture);
-    }
-    void Player::renderCountdown(SDL_Renderer* renderer, TTF_Font* font, Uint32 gameStartTime, int gameDuration, int player1ScoreX, int player2ScoreX , int pauseTime) {
-        Uint32 currentTime = SDL_GetTicks();
-        Uint32 elapsedTime = currentTime - gameStartTime - pauseTime;
-        int timeLeftMs = gameDuration - elapsedTime;
+}
+// hàm vẽ thời gian đếm ngược
+void Player::renderCountdown(SDL_Renderer* renderer, TTF_Font* font, Uint32 gameStartTime, int gameDuration, int player1ScoreX, int player2ScoreX , int pauseTime) {
+        Uint32 currentTime = SDL_GetTicks(); // lấy thời gian hiện tại
+        Uint32 elapsedTime = currentTime - gameStartTime - pauseTime; // thời gian đã trôi qua
+        int timeLeftMs = gameDuration - elapsedTime;// thời gian còn lại
         if (timeLeftMs < 0) timeLeftMs = 0;
 
         int totalSeconds = timeLeftMs / 1000;
@@ -195,8 +208,9 @@ Player::~Player() {
 
         SDL_FreeSurface(surface);
         SDL_DestroyTexture(texture);
-    }
-    void Player::renderHearts(SDL_Renderer* renderer, int playerID , TTF_Font* font, int score) {
+}
+// hàm vẽ heart + vẽ điểm
+void Player::renderHearts(SDL_Renderer* renderer, int playerID , TTF_Font* font, int score) {
          if (!heartTexture) return;
         int heartSize = 15;
         int spacing = 5;
@@ -214,11 +228,11 @@ Player::~Player() {
             SDL_Rect heartRect = {startX + i * (heartSize + spacing), startY, heartSize, heartSize};
             SDL_RenderCopy(renderer, heartTexture, NULL, &heartRect);
         }
-        renderScore(renderer, font, scoreX, scoreY, score , to_string(playerID));
+        renderScore(renderer, font, scoreX, scoreY, score , to_string(playerID)); // vẽ điểm người chơi
 
-    }
-
-    void Player::randomizePlayerPosition(Player& otherPlayer) {
+}
+//hàm randon vị trí người chơi
+void Player::randomizePlayerPosition(Player& otherPlayer) {
         srand(static_cast<unsigned int>(time(nullptr)));
 
         int row, col;
@@ -236,11 +250,12 @@ Player::~Player() {
         x = col * TILE_SIZE;
         y = row * TILE_SIZE;
 
-    }
-    bool Player::PlayerIsHit(float BulletX , float BulletY){
+}
+// hàm kiểm tra người chơi bị bắn
+bool Player::PlayerIsHit(float BulletX , float BulletY){
         return (BulletX >= x && BulletX <= x + PLAYER_SIZE && BulletY >= y && BulletY <= y + PLAYER_SIZE);
-    }
-    void Player::renderText(SDL_Renderer* renderer, TTF_Font* font, const string& text, int x, int y) {
+}
+void Player::renderText(SDL_Renderer* renderer, TTF_Font* font, const string& text, int x, int y) {
         if (!font) return;
 
         SDL_Color textColor = {255, 255, 255, 255};
@@ -257,6 +272,6 @@ Player::~Player() {
 
         SDL_FreeSurface(textSurface);
         SDL_DestroyTexture(textTexture);
-    }
+}
 
 
