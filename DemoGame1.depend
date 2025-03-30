@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1743355084 source:c:\users\tvtha\onedrive\desktop\testproject\demogame1\main.cpp
+1743356301 source:c:\users\tvtha\onedrive\desktop\testproject\demogame1\main.cpp
 	<SDL.h>
 	"Player.h"
 	"Map.h"
@@ -30,7 +30,7 @@
 	<cmath>
 	<memory>
 
-1743236157 c:\users\tvtha\onedrive\desktop\testproject\demogame1\player.h
+1743356992 c:\users\tvtha\onedrive\desktop\testproject\demogame1\player.h
 	<SDL.h>
 	<SDL_image.h>
 	<vector>
@@ -38,7 +38,7 @@
 	<SDL_ttf.h>
 	<string>
 
-1743352597 source:c:\users\tvtha\onedrive\desktop\testproject\demogame1\player.cpp
+1743356773 source:c:\users\tvtha\onedrive\desktop\testproject\demogame1\player.cpp
 	"Player.h"
 	"Map.h"
 	<ctime>

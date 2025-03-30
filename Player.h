@@ -13,10 +13,11 @@ enum Direction { UP, DOWN, LEFT, RIGHT };
 class Player{
 public:
     float x , y;
-    int score = 0;
-    int live = 5;
     float facingX, facingY;
     double angle;
+    int live ;
+    int score ;
+    int playerID;
     Player();
     ~Player();
 
@@ -25,12 +26,13 @@ public:
 
     void renderCountdown(SDL_Renderer* renderer, TTF_Font* font, Uint32 gameStartTime, int gameDuration, int player1ScoreX, int player2ScoreX , int pauseTime);
 
-    SDL_Texture* heartTexture;
+
     SDL_Texture* textureUp;
     SDL_Texture* textureDown;
     SDL_Texture* textureLeft;
     SDL_Texture* textureRight;
     SDL_Texture* currentTexture;
+    SDL_Texture* heartTexture;
     Direction currentDirection;
 
     bool loadHeartTexture(SDL_Renderer* renderer);
@@ -41,5 +43,6 @@ public:
     bool PlayerIsHit(float Bullet1 , float Bullet2);
     SDL_Texture* playerTexture;
     void loadPlayerTextures(SDL_Renderer* renderer, const char* upPath, const char* downPath, const char* leftPath, const char* rightPath);
+    void renderPlayerNumber(SDL_Renderer* renderer, TTF_Font* font);
 };
 #endif

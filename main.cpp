@@ -161,6 +161,8 @@ int main() {
 
 
         Player player1 , player2;
+        player1.playerID = 1; // Player 1
+        player2.playerID = 2; // Player 2
 
         player1.randomizePlayerPosition(player2); // random vị trí người chơi
         player2.randomizePlayerPosition(player1);
@@ -369,7 +371,9 @@ int main() {
                running = false;
             }
             player1.render(renderer);
+            player1.renderPlayerNumber(renderer, font_score);
             player2.render(renderer);// vẽ nhân vật
+            player2.renderPlayerNumber(renderer, font_score);
             for (auto& zombie : zombies) {
                 zombie.moveRandomly(zombies);// zombie di chuyển ngẫu nhiên
                 zombie.render(renderer);//vẽ zombie

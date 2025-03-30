@@ -10,7 +10,7 @@
 using namespace std;
 // hàm khởi tạo
 Player::Player()
-    : x(0), y(0), facingX(0), facingY(1), angle(0),live(5),  score(0),
+    : x(0), y(0), facingX(0), facingY(1), angle(0),live(5),  score(0), playerID(1),
       textureUp(nullptr), textureDown(nullptr), textureLeft(nullptr), textureRight(nullptr),
       currentTexture(nullptr), heartTexture(nullptr), currentDirection(DOWN) {
 }
@@ -272,6 +272,39 @@ void Player::renderText(SDL_Renderer* renderer, TTF_Font* font, const string& te
 
         SDL_FreeSurface(textSurface);
         SDL_DestroyTexture(textTexture);
+}
+void Player::renderPlayerNumber(SDL_Renderer* renderer, TTF_Font* font) {
+    if (!font) {
+        std::cout << "Font not loaded for player number!" << std::endl;
+        return;
+    }
+    std::string numberText = "Player " + std::to_string(playerID);
+    SDL_Color textColor = {255, 255, 255, 255}; // White color
+    SDL_Surface* numberSurface = TTF_RenderText_Solid(font, numberText.c_str(), textColor);
+    if (!numberSurface) {
+        std::cout << "Failed to create number surface: " << TTF_GetError() << std::endl;
+        return;
+    }
+
+    SDL_Texture* numberTexture = SDL_CreateTextureFromSurface(renderer, numberSurface);
+    if (!numberTexture) {
+        std::cout << "Failed to create number texture: " << SDL_GetError() << std::endl;
+        SDL_FreeSurface(numberSurface);
+        return;
+    }
+
+    int textWidth, textHeight;
+    TTF_SizeText(font, numberText.c_str(), &textWidth, &textHeight);
+    SDL_Rect numberRect = {
+        static_cast<int>(x + PLAYER_SIZE / 2 - textWidth / 2), // Center horizontally above player
+        static_cast<int>(y - textHeight - PLAYER_SIZE / 2 + 10),     // Above the player's head
+        textWidth,
+        textHeight
+    };
+
+    SDL_RenderCopy(renderer, numberTexture, nullptr, &numberRect);
+    SDL_FreeSurface(numberSurface);
+    SDL_DestroyTexture(numberTexture);
 }
 
 
