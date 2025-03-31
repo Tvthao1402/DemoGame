@@ -336,7 +336,7 @@ int main() {
 
                     Uint32 elapsedTime = SDL_GetTicks() - gameStartTime - pausedTime;// thời gian còn lại
 
-                if (elapsedTime >= GAME_DURATION) { // nếu còn thời gian chơi
+                if (elapsedTime >= GAME_DURATION) { // nếu hết giờ
                 if (player1.score > player2.score) {
                           winMessage = "Player 1 Wins!";
                             running = false;
