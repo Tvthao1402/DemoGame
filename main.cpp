@@ -36,7 +36,7 @@ int main() {
         return -1;
         }
 
-        // vẽ cửa sở
+        // vẽ cửa sổ
         SDL_Window* window = SDL_CreateWindow("Zombie Survival", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
         SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         Mix_Chunk* shootSound = nullptr; // tiếng bắn súng
